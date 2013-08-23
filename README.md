@@ -40,6 +40,6 @@ Go to an app or browser that has an add to Pocket feature, add something, you sh
 
 If you want to skip the IFTTT/Pocket accounts then you can use this browser bookmarklet:
 
-``javascript:(function(){window.open('http://www.yourdomain.com/foldername/add_to_en.php?salt=helloworld&url='+location.href,'AddToEn','status=no,directories=no,location=no,resizable=no,menubar=no,width=50,height=50,toolbar=no');})();``
+    javascript:(function(){window.open('http://www.yourdomain.com/foldername/add_to_en.php?salt=helloworld&url='+location.href,'AddToEn','status=no,directories=no,location=no,resizable=no,menubar=no,width=50,height=50,toolbar=no');})();
 
 Remember to update the URL and salt values.
