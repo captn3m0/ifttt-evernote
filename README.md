@@ -3,6 +3,8 @@ Add To Evernote
 
 A PHP script to add a web page to Evernote for offline reading from anywhere that has Pocket integration.
 
+![Before and after](http://www.diturner.co.uk/downloads/github.jpg)
+
 
 ##Requirements
 
