@@ -46,7 +46,7 @@
 				$page = curl_exec($ch);
 				curl_close($ch);
 		
-				if ($page) { // TODO: check this.
+				if ($page) {
 		
 					// Swap the Readability CSS with some that's more suited to Evernote.
 					include 'css.php';	
