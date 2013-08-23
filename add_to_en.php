@@ -1,9 +1,9 @@
 <?php
 	/* ADD TO EVERNOTE
 	 * v1.1
+	 * https://github.com/m00min/AddToEvernote
 	 * 
 	 * Copyright (c) Di Turner (www.diturner.co.uk)
-	 * 
 	 * Licensed under the MIT License. Read a copy of the license in the LICENSE.txt
 	 */
 	 
