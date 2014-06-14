@@ -20,15 +20,15 @@
 	// as a browser bookmarklet), or POST (what is sent from IFTTT).
 	if ($from_ifttt['title']) {
 		$url = str_replace('\/', '/', $from_ifttt['title']);
-		add_to_en($url, $en_email, $en_project, 'post', $salt);
+		add_to_en($url, $en_email, $en_project, $salt);
 		
 	} else {
 		if ( (isset($_GET['url'])) && ($_GET['url'] != '') ) {
-			add_to_en($_GET['url'], $en_email, $en_project, 'get', $salt);
+			add_to_en($_GET['url'], $en_email, $en_project, $salt);
 		}
 	}
 	
-	function add_to_en($url, $en_email, $en_project, $method, $salt) {
+	function add_to_en($url, $en_email, $en_project, $salt) {
 		
 		// Check the salt is correct, otherwise do nothing.
 		if ($_GET['salt'] == $salt) {
@@ -83,13 +83,9 @@
 		
 					// Send the email.
 					if (mail($en_email, $title, $page_final, $headers)) {
-						if ($method == 'get') {
-							echo 'Sent!';
-						}
+						echo 'Sent!';
 					} else {
-						if ($method == 'get') {
-							echo 'Not sent!';
-						}
+						echo 'Not sent!';
 					}
 					
 				}	// If $page.
