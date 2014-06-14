@@ -30,7 +30,9 @@ Upload the Add to EN script to your hosting, you will need to add your Evernote 
 If you haven't already done so you need to active your Pocket account in IFTTT. Next, go to the __Create__ menu item to add a new recipe. Choose __Pocket -> Any new item__ and then select __WordPress -> Create a post__. In title put the `{{Url}}` tag, as this is sent forward to readability. In the body field you need to put the URL of your copy of the Add to EN script along with the salt, e.g. 
 `http://www.yourdomain.com/foldername/add_to_en.php?salt=helloworld`.
 
-Unless you want random people adding to your Evernote account it's best to make your recipe private.
+Unless you want random people adding to your Evernote account it's best to make your recipe private. This is how your recipe should look:
+
+![Screenshot](https://i.imgur.com/qEdbkxH.png)
 
 ###Test it
 
