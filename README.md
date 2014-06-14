@@ -25,11 +25,10 @@ First, download and install the [IFTTT Webhook PHP script](https://github.com/ca
 
 Upload the Add to EN script to your hosting, you will need to add your Evernote email address and the project you want pages to be sent to in the _settings.php_ file. Also, you should change the $salt value to something random since this will be used to prevent other people sending junk to your Evernote account.
 
-Next, download the [Emogrifier PHP script](http://www.pelagodesign.com/sidecar/emogrifier/) and put _emogrifier.php_ in the same folder as _add_to_en.php_. Emogrifier is a script that is more often used when building email newsletters as most email clients like their CSS inline. Evernote also likes its CSS inline, so this script takes the CSS from css.php and applies it to the page content.
-
 ###Setup the IFTTT recipe
 
-If you haven't already done so you need to active your Pocket account in IFTTT. Next, go to the __Create__ menu item to add a new recipe. Choose __Pocket -> Any new item__ and then select __WordPress -> Create a post__. In title put the ``{{Title}}`` tag. The Body field should contain nothing but the {{Url}} tag as this is what is sent along to Readability. In the tag field you need to put the URL of your copy of the Add to EN script along with the salt, e.g. ``http://www.yourdomain.com/foldername/add_to_en.php?salt=helloworld``.
+If you haven't already done so you need to active your Pocket account in IFTTT. Next, go to the __Create__ menu item to add a new recipe. Choose __Pocket -> Any new item__ and then select __WordPress -> Create a post__. In title put the `{{Url}}` tag, as this is sent forward to readability. In the body field you need to put the URL of your copy of the Add to EN script along with the salt, e.g. 
+`http://www.yourdomain.com/foldername/add_to_en.php?salt=helloworld`.
 
 Unless you want random people adding to your Evernote account it's best to make your recipe private.
 
