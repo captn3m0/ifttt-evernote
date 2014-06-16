@@ -26,6 +26,9 @@
 		if ( (isset($_GET['url'])) && ($_GET['url'] != '') ) {
 			add_to_en($_GET['url'], $en_email, $en_project, $salt);
 		}
+		else{
+			die('No URL specified in GET request');
+		}
 	}
 	
 	function add_to_en($url, $en_email, $en_project, $salt) {
@@ -39,10 +42,11 @@
 				// Run the URL through Readability's anonymous mobiliser script.
 				$readability = 'http://www.readability.com/m?url='.$url;
 				$ch = curl_init();
-				$timeout = 5;
+				$timeout = 10;
 				curl_setopt($ch, CURLOPT_URL, $readability);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 				$page = curl_exec($ch);
 				curl_close($ch);
 		
@@ -50,7 +54,7 @@
 		
 					// Swap the Readability CSS with some that's more suited to Evernote.
 					include 'css.php';	
-					$page = str_replace('<link rel="stylesheet" href="/media/css/mobile/mobile.css">', '<style>'.$css.'</style>', $page);
+					$page = str_replace('</head>', '<style>'.$css.'</style>', $page);
 		
 					// Remove the Readability footer.
 					$page2 = explode('<footer role="contentinfo">', $page);
@@ -83,13 +87,23 @@
 		
 					// Send the email.
 					if (mail($en_email, $title, $page_final, $headers)) {
-						echo 'Sent!';
+						echo 'Mail to evernote Sent!';
 					} else {
-						echo 'Not sent!';
+						//echo $page_final;
+						echo 'Mail not sent to evernote!';
 					}
 					
 				}	// If $page.
+				else{
+					die("No response from readability");
+				}
 			}		// If http URL check.
+			else{
+				die("Invalid URL");
+			}
 		}			// If salt.
+		else{
+			die("Invalid Salt");
+		}
 	}				// Close function.
 ?>
