@@ -20,18 +20,18 @@
 	// as a browser bookmarklet), or POST (what is sent from IFTTT).
 	if ($from_ifttt['title']) {
 		$url = str_replace('\/', '/', $from_ifttt['title']);
-		add_to_en($url, $en_email, $en_project, $salt);
+		add_to_en($url, $en_email, $en_project, $salt, $token);
 		
 	} else {
 		if ( (isset($_GET['url'])) && ($_GET['url'] != '') ) {
-			add_to_en($_GET['url'], $en_email, $en_project, $salt);
+			add_to_en($_GET['url'], $en_email, $en_project, $salt, $token);
 		}
 		else{
 			die('No URL specified in GET request');
 		}
 	}
 	
-	function add_to_en($url, $en_email, $en_project, $salt) {
+	function add_to_en($url, $en_email, $en_project, $salt, $token) {
 		
 		// Check the salt is correct, otherwise do nothing.
 		if ($_GET['salt'] == $salt) {
@@ -40,41 +40,28 @@
 			if (substr($url, 0, 4) == 'http') {
 		
 				// Run the URL through Readability's anonymous mobiliser script.
-				$readability = 'http://www.readability.com/m?url='.$url;
+				$readability = 'http://readability.com//api/content/v1/parser?url='.$url.'&token='.$token;
 				$ch = curl_init();
 				$timeout = 10;
 				curl_setopt($ch, CURLOPT_URL, $readability);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 				$page = curl_exec($ch);
 				curl_close($ch);
 		
 				if ($page) {
 		
+					$json = json_decode($page);
+					$page = $json->content;
 					// Swap the Readability CSS with some that's more suited to Evernote.
 					include 'css.php';	
-					$page = str_replace('</head>', '<style>'.$css.'</style>', $page);
-		
-					// Remove the Readability footer.
-					$page2 = explode('<footer role="contentinfo">', $page);
-					$page3 = $page2[0].'<p class="readability-link"><a href="http://www.readability.com"><em>powered by</em> Readability</a></p></body></html>';
+					$page.="<style>$css</style>";
 
 					// Convert <style> CSS to inline CSS.
-					$emogrifier = new Emogrifier($page3);
+					$emogrifier = new Emogrifier($page);
 					$page_final = $emogrifier->emogrify();
 		
-					// Grab the <title> from the returned page, strip out the Readablility text. If we don't find a <title> use the URL.
-					preg_match("/<title>(.*)<\/title>/siU", $page_final, $title_match);
-					if (count($title_match) > 0) {
-						$title = preg_replace('/\s+/', ' ', $title_match[1]);
-						$title = str_replace('&mdash;', '--', $title);
-						$title = str_replace(' -- Readability', '', $title);
-						$title = html_entity_decode($title);
-        				$title = trim($title);
-					} else {
-        				$title = $url;
-					}
+					$title = $json->title;
         
         			// Add the Evernote project if one was specified.
 					if ($en_project != '') {
@@ -89,7 +76,7 @@
 					if (mail($en_email, $title, $page_final, $headers)) {
 						echo 'Mail to evernote Sent!';
 					} else {
-						//echo $page_final;
+						echo $page_final;
 						echo 'Mail not sent to evernote!';
 					}
 					
