@@ -42,16 +42,30 @@
 				// Run the URL through Readability's anonymous mobiliser script.
 				$readability = 'http://readability.com//api/content/v1/parser?url='.$url.'&token='.$token;
 				$ch = curl_init();
-				$timeout = 10;
+				$timeout = 20;
 				curl_setopt($ch, CURLOPT_URL, $readability);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-				$page = curl_exec($ch);
+				curl_setopt($ch, CURLOPT_HEADER, 1);
+				
+				$response = curl_exec($ch);
+				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+				$headers = substr($response, 0, $header_size);
+				$body = substr($response, $header_size);
+				$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
 				curl_close($ch);
+
+				$headers = explode("\n", $headers);
+				$response_line = $headers[0];
+				if($httpcode!=200) {
+					header($response_line);
+					header("Content-type: application/json");
+					die($body);
+				}
+				if ($body) {
 		
-				if ($page) {
-		
-					$json = json_decode($page);
+					$json = json_decode($body);
 					$page = $json->content;
 					// Swap the Readability CSS with some that's more suited to Evernote.
 					include 'css.php';	
