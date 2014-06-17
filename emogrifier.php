@@ -314,27 +314,29 @@ class Emogrifier {
 
         foreach ($this->caches[self::CACHE_KEY_CSS][$cssKey] as $value) {
             // query the body for the xpath selector
-            $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath(trim($value['selector'])));
+            $nodesMatchingCssSelectors = @$xpath->query($this->translateCssToXpath(trim($value['selector'])));
 
             /** @var $node \DOMNode */
-            foreach ($nodesMatchingCssSelectors as $node) {
-                // if it has a style attribute, get it, process it, and append (overwrite) new stuff
-                if ($node->hasAttribute('style')) {
-                    // break it up into an associative array
-                    $oldStyleDeclarations = $this->parseCssDeclarationBlock($node->getAttribute('style'));
-                    $newStyleDeclarations = $this->parseCssDeclarationBlock($value['attributes']);
+            if($nodesMatchingCssSelectors) { //This is sometimes false
+                foreach ($nodesMatchingCssSelectors as $node) {
+                    // if it has a style attribute, get it, process it, and append (overwrite) new stuff
+                    if ($node->hasAttribute('style')) {
+                        // break it up into an associative array
+                        $oldStyleDeclarations = $this->parseCssDeclarationBlock($node->getAttribute('style'));
+                        $newStyleDeclarations = $this->parseCssDeclarationBlock($value['attributes']);
 
-                    // new styles overwrite the old styles (not technically accurate, but close enough)
-                    $combinedArray = array_merge($oldStyleDeclarations, $newStyleDeclarations);
-                    $style = '';
-                    foreach ($combinedArray as $attributeName => $attributeValue) {
-                        $style .= (strtolower($attributeName) . ':' . $attributeValue . ';');
+                        // new styles overwrite the old styles (not technically accurate, but close enough)
+                        $combinedArray = array_merge($oldStyleDeclarations, $newStyleDeclarations);
+                        $style = '';
+                        foreach ($combinedArray as $attributeName => $attributeValue) {
+                            $style .= (strtolower($attributeName) . ':' . $attributeValue . ';');
+                        }
+                    } else {
+                        // otherwise create a new style
+                        $style = trim($value['attributes']);
                     }
-                } else {
-                    // otherwise create a new style
-                    $style = trim($value['attributes']);
+                    $node->setAttribute('style', $style);
                 }
-                $node->setAttribute('style', $style);
             }
         }
 
