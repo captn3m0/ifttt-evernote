@@ -3,6 +3,7 @@
   "description": "An ifttt-webhook plugin to publish complete articles to evernote",
   "require": {
   	"php": ">=5.3.2",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "evernote/evernote": "dev-master"
   }
 }
